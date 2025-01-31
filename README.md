@@ -12,7 +12,9 @@ This repo uses AVM to deploy azure resources, if you havent checked it out yes, 
 
 Below is an overview of our deployment:
 
-::: mermaid
+
+
+```mermaid
 graph TD
 subgraph Integration resources
 A[main.bicep] -->|uses shared existing resources|A
@@ -24,5 +26,5 @@ C[MonitorAlert] --> D
 D[WorkBook] --> F
 G[DashBoard]
 end
-:::
+```
 
