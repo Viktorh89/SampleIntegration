@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "APP_KIND": "workflowapp",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "WORKFLOWS_SUBSCRIPTION_ID": ""
+  }
+}
