@@ -23,7 +23,7 @@ end
 B[LogicAppStandard] -->C
 subgraph Monitoring resources
 C[MonitorAlert] --> D
-D[WorkBook] --> F
+D[WorkBook] --> G
 G[DashBoard]
 end
 ```
