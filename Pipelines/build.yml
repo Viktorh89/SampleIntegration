@@ -1,0 +1,25 @@
+jobs:
+- job: build_artifacts
+  displayName: 'Build artifacts'
+  pool:
+    vmImage: windows-latest
+  steps:
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: laoutput'
+      inputs:
+        SourceFolder: LogicApps
+        TargetFolder: 'laoutput'
+
+    - task: ArchiveFiles@2
+      displayName: 'laoutput zip'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/laoutput'
+        includeRootFolder: false
+        archiveFile: '$(System.DefaultWorkingDirectory)/zip/myla.zip'
+
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish Artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'integrationArtifacts'
+

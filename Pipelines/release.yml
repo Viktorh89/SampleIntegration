@@ -1,0 +1,49 @@
+parameters:
+- name: environment
+  type: string
+  default: dev
+  values:
+  - dev
+  - qa
+  - prod
+  
+- name: subscriptionId
+  type: string
+- name: azureResourceManagerConnection
+  type: string
+
+steps:
+- script: az bicep build --file Biceps/main.bicep
+  displayName: 'Compile Main Bicep file'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    templateLocation: 'Linked artifact'
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: ${{ parameters.azureResourceManagerConnection }}
+    subscriptionId: ${{ parameters.subscriptionId }}
+    resourceGroupName: 'rg-myIntegration-${{ parameters.environment }}'
+    action: 'Create Or Update Resource Group'
+    location: 'North Europe'
+    csmFile: $(Build.SourcesDirectory)/Biceps/main.bicep
+    #use if needed 
+    #overrideParameters: >-
+    # -functionVNetID "${{ parameters.functionVNetID }}" 
+    #or use this if needed
+    #parametersFileName: Main.${{ parameters.environment }}.bicepparam
+    deploymentOutputs: DeploymentOutput
+
+- task: DownloadPipelineArtifact@0
+  displayName: 'Download Build Artifacts'
+  inputs:
+    artifactName: 'integrationArtifacts'
+    downloadPath: '$(System.ArtifactsDirectory)'
+
+- task: AzureFunctionApp@1
+  displayName: 'Deploy LA'
+  inputs:
+    azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+    resourceGroupName: 'rg-myIntegration-${{ parameters.environment }}'
+    appType: functionApp
+    appName: 'la-sample-${{ parameters.environment }}'
+    package: '$(System.DefaultWorkingDirectory)/**/myla.zip'
+    deploymentMethod: 'zipDeploy'

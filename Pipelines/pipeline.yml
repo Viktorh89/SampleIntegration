@@ -1,0 +1,32 @@
+name: integrationSampleLAstd
+trigger:
+  branches:
+    include:
+    - master
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: build_artifacts
+  displayName: 'build artifacts'
+  jobs:
+  - template: build.yml
+
+- stage: dev
+  displayName: dev
+  jobs:
+  - deployment: Dev
+    pool:
+      vmImage: 'windows-latest'
+    environment: Development
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self 
+          - template: release.yml
+            parameters:
+              environment: 'dev'
+              subscriptionId: '<mysubscriptionId>'
+              azureResourceManagerConnection: '<myServiceConnection>'
